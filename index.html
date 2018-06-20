@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+	<script type="text/javascript" src="StatisticsGetData.js"></script>		
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+	<link rel="stylesheet" type="text/css" href="StatisticsDashboard.css">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg fixed-top blacknavbar">
+		<a class="navbar-brand home" href="index.html">Dashboard home page</a>
+	</nav>
+
+	<div class="container-fluid">
+		<div class="alert alert-danger alert-dismissible fade in margin10"  hidden="true">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<i id="incorrect"></i>
+		</div>
+		<div class="panel panel-default settings shadow-depth-1">
+			<div class='panel-heading margin0'>
+			<span class="headers margin0"><i class="glyphicon glyphicon-cog icon"></i> Settings</span>
+		</div>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-md-12 col-md-4" style="min-height: 30px;">
+					<div id="dataUser" class="pull-left" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; margin: 5px;">
+					<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+					<span></span> <b class="caret"></b></div>
+				</div>
+				<div class="col-md-12 col-md-4">
+					<label for="Target">Target: </label>
+						<input type="text" name="Target" class="costInput form-control" min="0" value="" pattern="^[0-9]*$" required>
+					<div class="row">
+						<div class="col-xs-6 col-md-6"><label for="PlusTolerance">[+ %]</label><input type="text" name="PlusTolerance" class="costInput form-control" min="0" value="" pattern="^[0-9]*$" required></div>
+						<div class="col-xs-6 col-md-6"><label for="MinusTolerance">[- %]</label><input type="text" name="MinusTolerance" class="costInput form-control" min="0" value="" pattern="^[0-9]*$" required></div>
+					</div>
+				</div>
+				<div class="col-md-12 col-md-4">
+				<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+						<div class="panel panel-default" style="padding-bottom:0;">
+							<div class="panel-heading" role="tab" id="headingOne">
+								<h4 class="panel-title">
+								<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Selected categories <span class="badge" id="CountCategories"></span></a>
+								</h4>
+							</div>
+							<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+								<div class="panel-body">
+									<div class="row form-inline">									
+										<div class="col-xs-12" id="CostCategories">
+										<b>Categories to forecast for groups</b><br>
+											<div class="row flex-space-around margin5">
+												<span><input class="form-check-input" type="checkbox" value="Hotel" >Hotel</span>
+												<span><input class="form-check-input" type="checkbox" value="Avis" >Avis</span>
+												<span><input class="form-check-input" type="checkbox" value="Booking">Booking cost</span>
+											</div>
+											<div class="row flex-space-around margin5">	
+												<span><input class="form-check-input" type="checkbox" value="Taxi">Taxi</span>
+												<span><input class="form-check-input" type="checkbox" value="PerDiem">Per diem</span>
+												<span><input class="form-check-input" type="checkbox" value="Plane">Plane</span>
+												<span><input class="form-check-input" type="checkbox" value="Poolcar">Poolcar</span>
+											</div>
+											<hr class="margin10">
+											<div class="btn-group btn-group-justified">
+												<button type="button" class="btn btn-default button-shadow btn-sm" id="SelectAllCategories">Select all</button>
+												<button type="button" class="btn btn-default button-shadow btn-sm" id="UnselectAllCategories">Unselect all</button>
+											</div>
+											<hr class="margin10">
+										</div>
+										<div id="GraphCategorie" class="form-check col-xs-12">
+										<b>Categorie to graph</b><br>
+											<div class="row flex-space-around margin5">
+												<span><input class="radio" type="radio" value="Total" name="GraphButton">Total</span>
+												<span><input class="radio" type="radio" value="Hotel" name="GraphButton">Hotel</span>
+												<span><input class="radio" type="radio" value="Avis" name="GraphButton">Avis</span>
+												<span><input class="radio" type="radio" value="Booking" name="GraphButton">Booking cost</span>
+											</div>
+											<div class="row flex-space-around margin5">	
+												<span><input class="radio" type="radio" value="Taxi" name="GraphButton">Taxi</span>
+												<span><input class="radio" type="radio" value="PerDiem" name="GraphButton">Per diem</span>
+												<span><input class="radio" type="radio" value="Plane" name="GraphButton">Plane</span>
+												<span><input class="radio" type="radio" value="Poolcar" name="GraphButton">Poolcar</span>	
+											</div>							
+										</div>
+										<hr>
+									</div>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panel-footer panel-custom flex-space-around">
+			<button class="btn btn-success button-shadow btn-md" type="button" onclick="validate()"><span class="glyphicon glyphicon-send"></span> Apply</button>
+			<button class="btn btn-warning button-shadow btn-md" type="button" onclick=" window.location = 'https://share.opel.com/sites/otd/';"><span class="glyphicon glyphicon-remove"></span> Cancel</button>	
+		</div>
+	</div>
+<!--start kafelki-->
+	<div id="basicInfo" class="container-fluid wraper" hidden="true">
+		<div class="col-md-4">
+			<div class="panel panel-default settings shadow-depth-1">
+				<div class='panel-heading'>
+					<span class="headers"><i class="glyphicon glyphicon-globe"></i> Numer of trips</span>
+				</div>
+				<div class='panel-body'>
+					<span id="tripsNumber"></span>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="panel panel-default settings shadow-depth-1">
+				<div class='panel-heading'>
+					<span class="headers"><i class="glyphicon glyphicon-user"></i> Joined trips</span>
+				</div>
+				<div class='panel-body'>
+					<span id="tripsJoined"></span>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="panel panel-default settings shadow-depth-1">
+				<div class='panel-heading'>
+					<span class="headers">Total cost in PLN</span> 
+				</div>
+				<div class='panel-body'>
+					<span id="totalCost"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+<!--end kafelki-->
+
+<!--  start show Calculated Cost -->
+	<div id='divCalculatedCost' class='container-fluid wraper margin5' hidden="true">		
+			<div class='panel panel-default shadow-depth-1 space'>
+				<div class='panel-heading'>
+						<span class="headers"><i class="glyphicon glyphicon-time"></i> Forecast cost - check details for each group in department</span>
+				</div>
+				<div class='panel-body'>
+					<ul class="nav nav-tabs" id="LinkCateogires">
+					</ul>
+					<div class="tab-content">
+						<div id="GroupCost" class="tab-pane fade in active">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Dept.</th>
+										<th>Number of trips</th>
+										<th>Joined trips</th>
+										<th id="tableTextCategories"></th>
+										<th>[%]</th>
+									</tr>
+								</thead>
+								<tbody id="groupDetailsToal"></tbody>
+							</table>
+						 </div>  
+					</div>
+				</div>
+			</div>
+	</div>
+<!--  end show Calculated Cost -->
+
+<!-- start graph-->
+	<div class='container-fluid wraper margin10'>
+		<div class="col-md-8" id="graph"></div>
+		<div class="col-md-4" id="topCountry" hidden="true">
+					<div class='panel panel-default shadow-depth-1'>
+					<div class='panel-heading'>
+					<i class="glyphicon glyphicon-road"></i>&nbsp;
+							<span class="headers">Trips destination</span>
+					</div>
+					<div class='panel-body'>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Destination</th>
+									<th>Number of trips</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+		</div>
+	</div>
+<!-- end graph-->
+</body>
+</html>
