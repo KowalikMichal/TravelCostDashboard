@@ -1,17 +1,11 @@
-var userSettings ={'StartDate': '', 'EndDate': '', 'Target': 0, 'PlusTolerance': '', 'MinusTolerance': 0};
-var userPermission = {'Name': '', 'Level': ''};
-
 var Group = ['MEACL', 'MPD', 'CQA', 'Press&Body', 'C&A', 'Paint', 'SKD'];
-var groupData ={'MEACL' :[{}], 'MPD' :[{}], 'CQA' :[{}], 'Press&Body' :[{}], 'C&A' :[{}], 'Paint' :[{}], 'SKD' :[{}]};
-
+var userSettings ={};
+var groupData ={};
 var travelInfo = [];
-var DepartmentCost; 
-var groupData =[];
 
 $(function(){
 	$('.collapse').collapse();
 	$('#CostCategories').find("input").prop( 'checked', true);
-	$('#CostCategories').find('input[value="PerDiem"]').prop( 'checked', false);
 	$('#GraphCategorie').find('input[value="Total"]').prop( 'checked', true);
 
 	calendar();
@@ -27,6 +21,14 @@ $(function(){
 			this.checked = true;
 		});
 	});
+
+	$('#apply').on('click', function(){
+		validate();
+	});
+
+	$('#cancel').on('click', function(){
+		window.history.back();
+	});
 });
 
 function calendar(){
@@ -38,6 +40,8 @@ function calendar(){
 	}
 
 	$('#dataUser').daterangepicker({
+		minDate: moment('2015/01/01'),
+ 		maxDate: moment('2018/12/31'),
 		startDate: start,
 		endDate: end,
 		ranges: {
@@ -70,33 +74,34 @@ function validate(){
 }
 
 function showDetails(){
-	var listName;
-	var countCategories = 0;
+	var counterCatregoiresLable = 0;
 	travelInfo =[];
-	userSettings ={'StartDate': '', 'EndDate': '', 'Target': 0, 'PlusTolerance': '', 'MinusTolerance': 0};
-	userSettings.StartDate = ($('#dataUser span').text()).substring(0,10);
-	userSettings.EndDate = ($('#dataUser span').text()).substring(13);
-	
-	userSettings.Target = parseInt($('input[name="Target"]').val())
-	userSettings.PlusTolerance = parseInt($('input[name="PlusTolerance"]').val());
-	userSettings.MinusTolerance = parseInt($('input[name="MinusTolerance"]').val());
+	userSettings ={};
+		userSettings.StartDate = moment(($('#dataUser span').text()).substring(0,10));
+		userSettings.EndDate = moment(($('#dataUser span').text()).substring(13));	
+		userSettings.Target = parseInt($('input[name="Target"]').val())
+		userSettings.PlusTolerance = parseInt($('input[name="PlusTolerance"]').val());
+		userSettings.MinusTolerance = parseInt($('input[name="MinusTolerance"]').val());
 	
 	groupData ={'MEACL' :[{}], 'MPD' :[{}], 'CQA' :[{}], 'Press&Body' :[{}], 'C&A' :[{}], 'Paint' :[{}], 'SKD' :[{}]};
 			
-	$.when(getDataAjax()).done(function(){
+	$.when(getDataAjax()).done(function(ajaxData){
+		travelInfo = ajaxData.filter(function(n){
+			if (moment(n.StartDate).isAfter(userSettings.StartDate) && moment(n.EndDate).isBefore(userSettings.EndDate)) return true;
+		});
+
 		graphTotalCost($('#GraphCategorie').find("input:checked").val());
 		topCountry();
 		
 		$('#LinkCateogires').html('');
 		$('#LinkCateogires').append('<li class="active"><a href="#Total">Total</a></li>');
 		$('#CostCategories').find("input:checked").map(function(){
-			countCategories +=1;
-			var temp = $(this).val();
+			counterCatregoiresLable +=1;
 			calculateCost($(this).val()); 
 			displayInterface($(this).val());
 		});
 		
-		$('#CountCategories').text(countCategories);
+		$('#CountCategories').text(counterCatregoiresLable);
 	
 		$('#LinkCateogires').find('li').bind('click', function(){
 			var dataHref = $(this).children().prop('href');
@@ -108,9 +113,9 @@ function showDetails(){
 }
 
 function getDataAjax(){
-	var oDataUrl = "https://api.myjson.com/bins/1bthgi";
+	var oDataUrl = "http://www.json-generator.com/api/json/get/cerOrePFTS?indent=2";
 
-	$.ajax({
+	return $.ajax({
 		async: false,
 		url: oDataUrl,
 		type: "GET",
@@ -119,8 +124,7 @@ function getDataAjax(){
 			"accept": "application/json;odata=verbose"  
 		},
 		success: function(data){
-			console.log(data);
-			travelInfo = data;
+			console.log('Ajax success!');
 		},
 		error: function(data, errMessage){
 			alert("Error on get data from database: " + errMessage);
@@ -131,7 +135,8 @@ function getDataAjax(){
 function displayInterface(userChoice){
 	$('#tripsNumber').text(travelInfo.length);
 	$('#tripsJoined').text(travelInfo.filter(function(n){if(n.JoinedTravelID !== null)return n}).length);
-	$('#totalCost').text(($.map(Group, function(index){return groupData[index][0]['Total'];}).reduce(function(p, n){return p+n;})).toLocaleString());
+	$('#totalCost').text(($.map(Group, function(index){return groupData[index][0]['Total'];}).reduce(function(p, n){return p+n;}))
+		.toLocaleString());
 	$('#basicInfo').removeAttr('hidden');
 	$('#LinkCateogires').append('<li><a href="#'+userChoice+'">'+userChoice+'</a></li>');
 	$('#divCalculatedCost').removeAttr('hidden');
@@ -151,16 +156,7 @@ function calculateCost(selectCategories){
 function calculateGroupCost(group, key){
 	if (key == 'JoinedTravelID') groupData[group][0][key] = (travelInfo.filter(function(n){if(n['Group'] == group && n.JoinedTravelID !== null)return n}).length);
 	else if (key == 'NumerOfTrips') groupData[group][0][key] = (travelInfo.filter(function(n){if(n['Group'] == group)return n}).length);
-	else if (key == 'Total'){
-		groupData[group][0][key] = 
-			((groupData[group][0]['Avis'] === undefined) ? 0 : groupData[group][0]['Avis'] )+ 
-			((groupData[group][0]['Booking'] === undefined) ? 0 : groupData[group][0]['Booking']) +
-			((groupData[group][0]['PerDiem']=== undefined) ? 0 : groupData[group][0]['PerDiem']) +
-			((groupData[group][0]['Hotel']=== undefined) ? 0 : groupData[group][0]['Hotel']) +
-			((groupData[group][0]['Poolcar']=== undefined) ? 0 : groupData[group][0]['Poolcar'] )+
-			((groupData[group][0]['Plane']=== undefined) ? 0 : groupData[group][0]['Plane']) +
-			((groupData[group][0]['Taxi']=== undefined) ? 0 : groupData[group][0]['Taxi']);
-	}
+	else if (key == 'Total') groupData[group][0][key] = ~~groupData[group][0]['Avis'] + ~~groupData[group][0]['Booking'] + ~~groupData[group][0]['PerDiem'] + ~~groupData[group][0]['Hotel'] + ~~groupData[group][0]['Poolcar'] + ~~groupData[group][0]['Plane'] + ~~groupData[group][0]['Taxi'];
 	else groupData[group][0][key] = $.map(travelInfo, function(n){if (n['Group']== group) return n[key];}).reduce(function(previous, current){return previous+current}, 0);
 }
 
@@ -169,12 +165,8 @@ function displayInformation(dipslay){
 	var detailsTabeleRow = null;
 	var sumarycost = null;
 
-	sumarycost  = $.map(Group, function(index){
-						return groupData[index][0][dipslay];
-					}).reduce(function(p, n){
-						return p+n;
-					});
-	
+	sumarycost  = $.map(Group, function(index){return groupData[index][0][dipslay];}).reduce(function(p, n){return p+n;});
+
 	$.each(Group, function(index){
 		$.map(groupData[Group[index]], function(n){
 			detailsTabeleRow += ('<tr><td>'+Group[index]+'</td><td>'+n.NumerOfTrips+'</td><td>'+n['JoinedTravelID']+'</td><td>'+(isNaN(n[dipslay]) ? 0 : n[dipslay].toLocaleString())+'</td><td>'+((isNaN(n[dipslay]/sumarycost)) ? 0: (n[dipslay]/sumarycost*100).toLocaleString())+'</td></tr>');
@@ -220,39 +212,30 @@ function graphTotalCost(categorie){
 	
 	$.each(Group, function(index, group){
 		graphData[group] = {};
-		for(var year = parseInt(moment(userSettings.StartDate).format('YYYY')); year <= parseInt(moment(userSettings.EndDate).format('YYYY')); year++) {
+		for(var year = ~~userSettings.StartDate.format('YYYY'); year <= ~~userSettings.EndDate.format('YYYY'); year++) {
 			graphData[group][year] = {}
-			for(var month = parseInt(moment(userSettings.StartDate).format('M')); month <= parseInt(moment(userSettings.EndDate).format('M')); month++){
+			for(var month = ~~userSettings.StartDate.format('M'); month <= ~~userSettings.EndDate.format('M'); month++){
 				graphData[group][year][month] = {};
-				var filterByDate = travelInfo.map(function(n){
-										var To = moment(n.To).format('YYYY-M-DD');
-										var From = moment(n.From).format('YYYY-M-DD');
-										var helpMonth = null;
-										
-										if (month>0 && month<10) helpMonth = '0' + month; //moment.js nie wykryje osttaniego dnia miesiąca jeżeli będzie miesiąc 4, musi być 04
-										else helpMonth = month;
-										if (moment(n.From).isAfter(moment(year+'-'+helpMonth +'-01')) && moment(n.To).isBefore(moment(year+'-'+helpMonth).endOf('month').format('YYYY-MM-DD')) && (n.Group == group)){
-										//if ((To >= moment(year+'-'+helpMonth +'-01')) && (From <= moment(year+'-'+helpMonth).endOf('month').format('YYYY-MM-DD')) && (n.Group == group)){											
-											if(categorie == 'Total'){
-												TotalCost =
-															((n['Avis'] === undefined || n['Avis'] === null) ? 0 : n['Avis'] )+ 
-															((n['Booking'] === undefined || n['Booking'] === null) ? 0 : n['Booking']) +
-															((n['PerDiem']=== undefined || n['PerDiem']=== null) ? 0 : n['PerDiem']) +
-															((n['Hotel']=== undefined || n['Hotel']=== null) ? 0 : n['Hotel']) +
-															((n['Poolcar']=== undefined || n['Poolcar']=== null) ? 0 : n['Poolcar'] )+
-															((n['Plane']=== undefined || n['Plane']=== null) ? 0 : n['Plane']) +
-															((n['Taxi']=== undefined || n['Taxi']=== null) ? 0 : n['Taxi']);
-												return TotalCost;
-											}
-											else{
-												return ((n[categorie] === undefined || n[categorie] === null) ? 0 : n[categorie] );
-											}
-										}
-									}).reduce(function(n, p){
-										if (n === undefined) n=0;
-										if (p === undefined) p=0;
-										return n+p;
-									});
+				var filterByDate =
+				travelInfo.map(function(n){
+					var firstDayMonth = moment(year+'-'+month +'-01').format('YYYY-MM-DD');
+					var lastDayMoth = moment(year+'-'+month).endOf('month').format('YYYY-MM-DD');
+
+					if (moment(n.StartDate).isAfter(firstDayMonth) && moment(n.EndDate).isBefore(lastDayMoth) && (n.Group == group)){		
+						console.log('if')							
+						if(categorie == 'Total'){
+							TotalCost = ~~n['Avis'] + ~~ n['Booking'] + ~~n['PerDiem'] + ~~ n['Hotel'] + ~~ n['Poolcar'] + ~~n['Plane'] + ~~n['Taxi'];
+							return TotalCost;
+						}
+						else{
+							return ~~ n[categorie];
+						}
+					}
+				}).reduce(function(n, p){
+					if (n === undefined) n=0;
+					if (p === undefined) p=0;
+					return n+p;
+				});
 				graphData[group][year][month] = filterByDate;
 			}
 		}
