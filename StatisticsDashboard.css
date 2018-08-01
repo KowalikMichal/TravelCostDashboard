@@ -1,25 +1,16 @@
-#contentBox{
-	background-color: transparent;
-	margin: 0;
-	padding: 0;
+body{
+	font-family: sans-serif;
 }
 
 .blacknavbar{
 	background-color: rgba(68, 68, 68, 1);
 	margin: 0;
+	margin-bottom: 20px;
 }
 
-.blacknavbar > a {
+.blacknavbar > h3 {
 	color: white;
-}
-
-.settings {
-	padding: 10px;
-	margin: 10px;
-}
-
-.widget-panel{
-	border: 1px solid red;
+	padding: 1vh;
 }
 
 .headers{
@@ -37,7 +28,7 @@
 	align-items: center;
 }
 
-.panel-footer.panel-custom {
+.panel-footer{
 	background: transparent;
 }
 
@@ -45,26 +36,19 @@
 	-webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
 	-moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
 	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-}
-
-.margin0{
-	margin: 0;
-}
-
-.margin5{
-	margin: 5px;
-}
-
-.margin10{
-	margin: 10px;
+	z-index: 1;
 }
 
 canvas{
   height: 400px !important;
 }
 
-.space{
-	margin: 5px;
+.row > label{
+	font-weight: normal;
+}
+
+.container-fluid + .container-fluid{
+	margin: 1vh;
 }
 
 .error{
@@ -75,20 +59,13 @@ canvas{
 	font-color: red;
 }
 
-input[type="text"]:focus:invalid,
-textarea:focus:invalid{
+input[type="text"]:focus:invalid, textarea:focus:invalid{
 	border:solid 2px #F5192F;
 }
 
-input[type="text"]:focus:valid,
-textarea:focus:valid{
+input[type="text"]:focus:valid, textarea:focus:valid{
 	border:solid 2px #18E109;
 	background-color:#fff;
-}
-
-.text-align-center{
-	display: block;
-	text-align: center;
 }
 
 .invalid{
@@ -98,4 +75,31 @@ textarea:focus:valid{
 .valid{
 	border:solid 2px #18E109;
 	background-color:#fff;
+}
+
+.calendar{
+	background: #fff;
+	cursor:pointer;
+	padding: 5px 10px;
+	border: 1px solid #ccc;
+	width: 100%;
+	margin: 5px;
+}
+
+.hr{
+   	border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+.flex-button{
+	padding: 2vh;
+	display: flex;
+	flex-flow: row wrap;
+}
+
+.flex-button > label + label, .flex-button > label{
+	margin-right: 10px;
+	margin-left: 10px;
 }

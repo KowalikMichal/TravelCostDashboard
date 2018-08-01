@@ -15,23 +15,23 @@
 	<link rel="stylesheet" type="text/css" href="StatisticsDashboard.css">
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg fixed-top blacknavbar">
-		<a class="navbar-brand home" href="index.html">Dashboard home page</a>
+	<nav class="navbar blacknavbar">
+		<h3>Travel forecast cost</h3>
 	</nav>
 
 	<div class="container-fluid">
-		<div class="alert alert-danger alert-dismissible fade in margin10"  hidden="true">
+		<div class="alert alert-danger alert-dismissible fade in"  hidden="true">
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 			<i id="incorrect"></i>
 		</div>
 		<div class="panel panel-default settings shadow-depth-1">
-			<div class='panel-heading margin0'>
-			<span class="headers margin0"><i class="glyphicon glyphicon-cog icon"></i> Settings</span>
+			<div class='panel-heading'>
+			<span class="headers"><i class="glyphicon glyphicon-cog icon"></i> Settings</span>
 		</div>
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-md-12 col-md-4" style="min-height: 30px;">
-					<div id="dataUser" class="pull-left" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; margin: 5px;">
+					<div id="dataUser" class="pull-left calendar">
 					<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
 					<span></span> <b class="caret"></b></div>
 				</div>
@@ -45,7 +45,7 @@
 				</div>
 				<div class="col-md-12 col-md-4">
 				<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-						<div class="panel panel-default" style="padding-bottom:0;">
+						<div class="panel panel-default">
 							<div class="panel-heading" role="tab" id="headingOne">
 								<h4 class="panel-title">
 								<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Selected categories <span class="badge" id="CountCategories"></span></a>
@@ -56,37 +56,33 @@
 									<div class="row form-inline">									
 										<div class="col-xs-12" id="CostCategories">
 										<b>Categories to forecast for groups</b><br>
-											<div class="row flex-space-around margin5">
-												<span><input class="form-check-input" type="checkbox" value="Hotel" >Hotel</span>
-												<span><input class="form-check-input" type="checkbox" value="Avis" >Avis</span>
-												<span><input class="form-check-input" type="checkbox" value="Booking">Booking cost</span>
+											<div class="row flex-button">
+												<label><input class="form-check-input" type="checkbox" value="Hotel" >Hotel</label>
+												<label><input class="form-check-input" type="checkbox" value="Avis" >Avis</label>
+												<label><input class="form-check-input" type="checkbox" value="Booking">Booking cost</label>
+												<label><input class="form-check-input" type="checkbox" value="Taxi">Taxi</label>
+												<label><input class="form-check-input" type="checkbox" value="PerDiem">Per diem</label>
+												<label><input class="form-check-input" type="checkbox" value="Plane">Plane</label>
+												<label><input class="form-check-input" type="checkbox" value="Poolcar">Poolcar</label>
 											</div>
-											<div class="row flex-space-around margin5">	
-												<span><input class="form-check-input" type="checkbox" value="Taxi">Taxi</span>
-												<span><input class="form-check-input" type="checkbox" value="PerDiem">Per diem</span>
-												<span><input class="form-check-input" type="checkbox" value="Plane">Plane</span>
-												<span><input class="form-check-input" type="checkbox" value="Poolcar">Poolcar</span>
-											</div>
-											<hr class="margin10">
-											<div class="btn-group btn-group-justified">
+											<hr class="hr">
+											<div class="btn-group flex-space-around">
 												<button type="button" class="btn btn-default button-shadow btn-sm" id="SelectAllCategories">Select all</button>
 												<button type="button" class="btn btn-default button-shadow btn-sm" id="UnselectAllCategories">Unselect all</button>
 											</div>
-											<hr class="margin10">
+											<hr class="hr">
 										</div>
 										<div id="GraphCategorie" class="form-check col-xs-12">
 										<b>Categorie to graph</b><br>
-											<div class="row flex-space-around margin5">
-												<span><input class="radio" type="radio" value="Total" name="GraphButton">Total</span>
-												<span><input class="radio" type="radio" value="Hotel" name="GraphButton">Hotel</span>
-												<span><input class="radio" type="radio" value="Avis" name="GraphButton">Avis</span>
-												<span><input class="radio" type="radio" value="Booking" name="GraphButton">Booking cost</span>
-											</div>
-											<div class="row flex-space-around margin5">	
-												<span><input class="radio" type="radio" value="Taxi" name="GraphButton">Taxi</span>
-												<span><input class="radio" type="radio" value="PerDiem" name="GraphButton">Per diem</span>
-												<span><input class="radio" type="radio" value="Plane" name="GraphButton">Plane</span>
-												<span><input class="radio" type="radio" value="Poolcar" name="GraphButton">Poolcar</span>	
+											<div class="row flex-button">
+												<label><input class="radio" type="radio" value="Total" name="GraphButton">Total</label>
+												<label><input class="radio" type="radio" value="Hotel" name="GraphButton">Hotel</label>
+												<label><input class="radio" type="radio" value="Avis" name="GraphButton">Avis</label>
+												<label><input class="radio" type="radio" value="Booking" name="GraphButton">Booking cost</label>
+												<label><input class="radio" type="radio" value="Taxi" name="GraphButton">Taxi</label>
+												<label><input class="radio" type="radio" value="PerDiem" name="GraphButton">Per diem</label>
+												<label><input class="radio" type="radio" value="Plane" name="GraphButton">Plane</label>
+												<label><input class="radio" type="radio" value="Poolcar" name="GraphButton">Poolcar</label>	
 											</div>							
 										</div>
 										<hr>
@@ -99,9 +95,9 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel-footer panel-custom flex-space-around">
-			<button class="btn btn-success button-shadow btn-md" type="button" onclick="validate()"><span class="glyphicon glyphicon-send"></span> Apply</button>
-			<button class="btn btn-warning button-shadow btn-md" type="button" onclick=" window.location = 'https://share.opel.com/sites/otd/';"><span class="glyphicon glyphicon-remove"></span> Cancel</button>	
+		<div class="panel-footer flex-space-around">
+			<button class="btn btn-success button-shadow btn-md" type="button" id="apply"><span class="glyphicon glyphicon-send"></span> Apply</button>
+			<button class="btn btn-warning button-shadow btn-md" type="button" id="cancel"><span class="glyphicon glyphicon-remove"></span> Cancel</button>	
 		</div>
 	</div>
 <!--start kafelki-->
@@ -140,8 +136,8 @@
 <!--end kafelki-->
 
 <!--  start show Calculated Cost -->
-	<div id='divCalculatedCost' class='container-fluid wraper margin5' hidden="true">		
-			<div class='panel panel-default shadow-depth-1 space'>
+	<div id='divCalculatedCost' class='container-fluid wraper' hidden="true">		
+			<div class='panel panel-default shadow-depth-1'>
 				<div class='panel-heading'>
 						<span class="headers"><i class="glyphicon glyphicon-time"></i> Forecast cost - check details for each group in department</span>
 				</div>
@@ -170,7 +166,7 @@
 <!--  end show Calculated Cost -->
 
 <!-- start graph-->
-	<div class='container-fluid wraper margin10'>
+	<div class='container-fluid wraper'>
 		<div class="col-md-8" id="graph"></div>
 		<div class="col-md-4" id="topCountry" hidden="true">
 					<div class='panel panel-default shadow-depth-1'>
