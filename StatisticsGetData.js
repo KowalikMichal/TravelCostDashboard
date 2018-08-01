@@ -113,7 +113,7 @@ function showDetails(){
 }
 
 function getDataAjax(){
-	var oDataUrl = "http://www.json-generator.com/api/json/get/cerOrePFTS?indent=2";
+	var oDataUrl = "https://raw.githubusercontent.com/KowalikMichal/TravelCostDashboard/master/generated.json";
 
 	return $.ajax({
 		async: false,
