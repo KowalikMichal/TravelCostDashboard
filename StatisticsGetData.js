@@ -288,7 +288,7 @@ function topCountry(){
 	var htmltopCountry;
 	var topCountry;
 
-	TopCountry= $.map(travelInfo, function(n){return (n.Destiantion.toUpperCase().slice(0, n.Destiantion.indexOf(',')))}).reduce(function(obj, elem){
+	TopCountry= $.map(travelInfo, function(n){return (n.Destiantion.toUpperCase())}).reduce(function(obj, elem){
 						obj[elem]=obj[elem] || 0;
 						obj[elem]++;
 						return obj;}, {});
