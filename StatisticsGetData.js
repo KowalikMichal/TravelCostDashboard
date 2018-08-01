@@ -134,9 +134,8 @@ function getDataAjax(){
 
 function displayInterface(userChoice){
 	$('#tripsNumber').text(travelInfo.length);
-	$('#tripsJoined').text(travelInfo.filter(function(n){if(n.JoinedTravelID !== null)return n}).length);
-	$('#totalCost').text(($.map(Group, function(index){return groupData[index][0]['Total'];}).reduce(function(p, n){return p+n;}))
-		.toLocaleString());
+	$('#tripsJoined').text(travelInfo.filter(function(n){if(n.Join !== null)return n}).length);
+	$('#totalCost').text(($.map(Group, function(index){return groupData[index][0]['Total'];}).reduce(function(p, n){return p+n;})).toLocaleString());
 	$('#basicInfo').removeAttr('hidden');
 	$('#LinkCateogires').append('<li><a href="#'+userChoice+'">'+userChoice+'</a></li>');
 	$('#divCalculatedCost').removeAttr('hidden');
@@ -146,7 +145,7 @@ function calculateCost(selectCategories){
 	$.each(groupData, function(index){
 		calculateGroupCost(index, selectCategories);
 		calculateGroupCost(index, 'Total');
-		calculateGroupCost(index, 'JoinedTravelID');
+		calculateGroupCost(index, 'Join');
 		calculateGroupCost(index, 'NumerOfTrips');
 	});
 	displayInformation('Total');
@@ -154,7 +153,7 @@ function calculateCost(selectCategories){
 
 
 function calculateGroupCost(group, key){
-	if (key == 'JoinedTravelID') groupData[group][0][key] = (travelInfo.filter(function(n){if(n['Group'] == group && n.JoinedTravelID !== null)return n}).length);
+	if (key == 'Join') groupData[group][0][key] = (travelInfo.filter(function(n){if(n['Group'] == group && n.Join !== null)return n}).length);
 	else if (key == 'NumerOfTrips') groupData[group][0][key] = (travelInfo.filter(function(n){if(n['Group'] == group)return n}).length);
 	else if (key == 'Total') groupData[group][0][key] = ~~groupData[group][0]['Avis'] + ~~groupData[group][0]['Booking'] + ~~groupData[group][0]['PerDiem'] + ~~groupData[group][0]['Hotel'] + ~~groupData[group][0]['Poolcar'] + ~~groupData[group][0]['Plane'] + ~~groupData[group][0]['Taxi'];
 	else groupData[group][0][key] = $.map(travelInfo, function(n){if (n['Group']== group) return n[key];}).reduce(function(previous, current){return previous+current}, 0);
@@ -169,7 +168,7 @@ function displayInformation(dipslay){
 
 	$.each(Group, function(index){
 		$.map(groupData[Group[index]], function(n){
-			detailsTabeleRow += ('<tr><td>'+Group[index]+'</td><td>'+n.NumerOfTrips+'</td><td>'+n['JoinedTravelID']+'</td><td>'+(isNaN(n[dipslay]) ? 0 : n[dipslay].toLocaleString())+'</td><td>'+((isNaN(n[dipslay]/sumarycost)) ? 0: (n[dipslay]/sumarycost*100).toLocaleString())+'</td></tr>');
+			detailsTabeleRow += ('<tr><td>'+Group[index]+'</td><td>'+n.NumerOfTrips+'</td><td>'+n['Join']+'</td><td>'+(isNaN(n[dipslay]) ? 0 : n[dipslay].toLocaleString())+'</td><td>'+((isNaN(n[dipslay]/sumarycost)) ? 0: (n[dipslay]/sumarycost*100).toLocaleString())+'</td></tr>');
 			});
 	});
 	
