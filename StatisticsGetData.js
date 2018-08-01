@@ -119,6 +119,7 @@ function getDataAjax(){
 		async: false,
 		url: oDataUrl,
 		type: "GET",
+		cache: true,
 		dataType: "json",
 		headers: {
 			"accept": "application/json;odata=verbose"  
@@ -139,6 +140,7 @@ function displayInterface(userChoice){
 	$('#basicInfo').removeAttr('hidden');
 	$('#LinkCateogires').append('<li><a href="#'+userChoice+'">'+userChoice+'</a></li>');
 	$('#divCalculatedCost').removeAttr('hidden');
+
 }
 
 function calculateCost(selectCategories){
@@ -159,23 +161,21 @@ function calculateGroupCost(group, key){
 	else groupData[group][0][key] = $.map(travelInfo, function(n){if (n['Group']== group) return n[key];}).reduce(function(previous, current){return previous+current}, 0);
 }
 
-function displayInformation(dipslay){
+function displayInformation(display){
 	$('#groupDetailsToal').html('');
 	var detailsTabeleRow = null;
 	var sumarycost = null;
 
-	sumarycost  = $.map(Group, function(index){return groupData[index][0][dipslay];}).reduce(function(p, n){return p+n;});
-
+	sumarycost  = $.map(Group, function(index){return groupData[index][0][display];}).reduce(function(p, n){return p+n;});
 	$.each(Group, function(index){
 		$.map(groupData[Group[index]], function(n){
-			detailsTabeleRow += ('<tr><td>'+Group[index]+'</td><td>'+n.NumerOfTrips+'</td><td>'+n['Join']+'</td><td>'+(isNaN(n[dipslay]) ? 0 : n[dipslay].toLocaleString())+'</td><td>'+((isNaN(n[dipslay]/sumarycost)) ? 0: (n[dipslay]/sumarycost*100).toLocaleString())+'</td></tr>');
+			detailsTabeleRow += ('<tr><td data-title="Dept.">'+Group[index]+'</td><td data-title="Number of trips">'+n.NumerOfTrips+'</td><td data-title="Joined trips">'+n['Join']+'</td><td data-title="'+display+'">'+(isNaN(n[display]) ? 0 : n[display].toLocaleString())+'</td><td data-title="[%]">'+((isNaN(n[display]/sumarycost)) ? 0: (n[display]/sumarycost*100).toLocaleString())+'</td></tr>');
 			});
 	});
-	
-	detailsTabeleRow += ('<tr><td><b>Summary cost</b></td><td></td><td></td><td><b>'+sumarycost.toLocaleString()+'</b></td><<td></td>/tr>');
-	
-	$('#tableTextCategories').text(dipslay+' in PLN');
-	$('#groupDetailsToal').html(detailsTabeleRow);
+
+	$('#tableTextCategories').text(display+' in PLN');
+	$('#GroupCost').find('tbody').html(detailsTabeleRow);
+	$('#GroupCost').find('tfoot').html('<tr><td colspan="3"><b>Summary cost</b></td><td colspan="2">'+sumarycost.toLocaleString()+'</b></td>/tr>');
 }
 
 function graphTotalCost(categorie){
@@ -220,8 +220,7 @@ function graphTotalCost(categorie){
 					var firstDayMonth = moment(year+'-'+month +'-01').format('YYYY-MM-DD');
 					var lastDayMoth = moment(year+'-'+month).endOf('month').format('YYYY-MM-DD');
 
-					if (moment(n.StartDate).isAfter(firstDayMonth) && moment(n.EndDate).isBefore(lastDayMoth) && (n.Group == group)){		
-						console.log('if')							
+					if (moment(n.StartDate).isAfter(firstDayMonth) && moment(n.EndDate).isBefore(lastDayMoth) && (n.Group == group)){								
 						if(categorie == 'Total'){
 							TotalCost = ~~n['Avis'] + ~~ n['Booking'] + ~~n['PerDiem'] + ~~ n['Hotel'] + ~~ n['Poolcar'] + ~~n['Plane'] + ~~n['Taxi'];
 							return TotalCost;
@@ -231,8 +230,8 @@ function graphTotalCost(categorie){
 						}
 					}
 				}).reduce(function(n, p){
-					if (n === undefined) n=0;
-					if (p === undefined) p=0;
+					n = ~~n;
+					p = ~~p;
 					return n+p;
 				});
 				graphData[group][year][month] = filterByDate;
@@ -250,7 +249,6 @@ function graphTotalCost(categorie){
 			$.each(Group, function(index, group){
 				data.push(graphData[group][year][month].toFixed(2));
 			});
-			
 			addData(barChart, 'rgb(255, 99, 132)', data, (year+'/'+ month) , 'bar');
 		});
 	});

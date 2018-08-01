@@ -40,7 +40,7 @@ body{
 }
 
 canvas{
-  height: 400px !important;
+  min-height: 400px !important;
 }
 
 .row > label{
@@ -49,6 +49,10 @@ canvas{
 
 .container-fluid + .container-fluid{
 	margin: 1vh;
+}
+
+#graph + #topCountry {
+	margin-top: 1vh;
 }
 
 .error{
@@ -102,4 +106,49 @@ input[type="text"]:focus:valid, textarea:focus:valid{
 .flex-button > label + label, .flex-button > label{
 	margin-right: 10px;
 	margin-left: 10px;
+}
+
+@media only screen and (max-width: 500px) {
+	#no-more-tables table, 
+	#no-more-tables thead, 
+	#no-more-tables tbody, 
+	#no-more-tables tfoot, 
+	#no-more-tables th, 
+	#no-more-tables td, 
+	#no-more-tables tr { 
+		display: block; 
+	}
+	#no-more-tables thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+ 
+ 	#no-more-tables thead td{
+ 		text-align: center;
+ 	}
+
+	#no-more-tables tr { border: 1px solid #ccc; }
+ 
+	#no-more-tables td { 
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 50%; 
+		white-space: normal;
+		text-align:left;
+	}
+ 
+	#no-more-tables td:before { 
+		position: absolute;
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+		text-align:left;
+		font-weight: bold;
+	}
+
+	#no-more-tables td:before { content: attr(data-title); }
 }
