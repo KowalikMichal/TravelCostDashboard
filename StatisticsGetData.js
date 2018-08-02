@@ -32,7 +32,7 @@ $(function(){
 });
 
 function calendar(){
-	var start = moment().subtract(29, 'days');
+	var start =  moment('2017-01-31').subtract(29, 'days');
 	var end = moment();
 	
 	function cb(start, end){
@@ -40,15 +40,18 @@ function calendar(){
 	}
 
 	$('#dataUser').daterangepicker({
+		autoApply: true,
 		minDate: moment('2015/01/01'),
  		maxDate: moment('2018/12/31'),
 		startDate: start,
 		endDate: end,
 		ranges: {
-			'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-			'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-			'This Month': [moment().startOf('month'), moment().endOf('month')],
-			'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+			'2015': [moment('2015/01/01'), moment('2015/12/31')],
+			'2016': [moment('2016/01/01'), moment('2016/12/31')],
+			'2016': [moment('2016/01/01'), moment('2016/12/31')],
+			'2017': [moment('2017/01/01'), moment('2017/12/31')],
+			'2018': [moment('2018/01/01'), moment('2018/12/31')],
+			'All tips': [moment('2015/01/01'), moment('2018/12/31')]
 		}
 	}, cb);
 	cb(start, end);
@@ -74,6 +77,7 @@ function validate(){
 }
 
 function showDetails(){
+	DisplayModalWorking();
 	var counterCatregoiresLable = 0;
 	travelInfo =[];
 	userSettings ={};
@@ -89,26 +93,27 @@ function showDetails(){
 		travelInfo = ajaxData.filter(function(n){
 			if (moment(n.StartDate).isAfter(userSettings.StartDate) && moment(n.EndDate).isBefore(userSettings.EndDate)) return true;
 		});
-
+		if (!travelInfo.length > 0){
+			return DisplayModalFail('No any trips in select date!');
+		}
 		graphTotalCost($('#GraphCategorie').find("input:checked").val());
 		topCountry();
 		
 		$('#LinkCateogires').html('');
-		$('#LinkCateogires').append('<li class="active"><a href="#Total">Total</a></li>');
 		$('#CostCategories').find("input:checked").map(function(){
 			counterCatregoiresLable +=1;
 			calculateCost($(this).val()); 
 			displayInterface($(this).val());
 		});
-		
 		$('#CountCategories').text(counterCatregoiresLable);
-	
 		$('#LinkCateogires').find('li').bind('click', function(){
 			var dataHref = $(this).children().prop('href');
 			$(this).siblings().removeClass('active');
 			$(this).addClass('active');
 			displayInformation(dataHref.slice(dataHref.indexOf('#')+1))
 		});
+		$('#ModalInfo .close').click();
+		$('#LinkCateogires li:first-child').click();
 	});
 }
 
@@ -136,23 +141,26 @@ function getDataAjax(){
 function displayInterface(userChoice){
 	$('#tripsNumber').text(travelInfo.length);
 	$('#tripsJoined').text(travelInfo.filter(function(n){if(n.Join !== null)return n}).length);
-	$('#totalCost').text(($.map(Group, function(index){return groupData[index][0]['Total'];}).reduce(function(p, n){return p+n;})).toLocaleString());
+	$('#totalCost').text(
+		$.map(travelInfo, function(element){
+			var returnValue = ~~element['Avis'] + ~~element['Booking'] +~~element['Hotel'] + ~~element['PerDiem'] +~~element['Plane'] +~~element['Poolcar'] + ~~element['Taxi'];
+			return returnValue;
+		}).reduce(function(p,n){
+			return ~~p+~~n;
+		}).toLocaleString()
+	);
 	$('#basicInfo').removeAttr('hidden');
 	$('#LinkCateogires').append('<li><a href="#'+userChoice+'">'+userChoice+'</a></li>');
 	$('#divCalculatedCost').removeAttr('hidden');
-
 }
 
 function calculateCost(selectCategories){
 	$.each(groupData, function(index){
 		calculateGroupCost(index, selectCategories);
-		calculateGroupCost(index, 'Total');
 		calculateGroupCost(index, 'Join');
 		calculateGroupCost(index, 'NumerOfTrips');
 	});
-	displayInformation('Total');
 }
-
 
 function calculateGroupCost(group, key){
 	if (key == 'Join') groupData[group][0][key] = (travelInfo.filter(function(n){if(n['Group'] == group && n.Join !== null)return n}).length);
@@ -165,8 +173,7 @@ function displayInformation(display){
 	$('#groupDetailsToal').html('');
 	var detailsTabeleRow = null;
 	var sumarycost = null;
-
-	sumarycost  = $.map(Group, function(index){return groupData[index][0][display];}).reduce(function(p, n){return p+n;});
+		sumarycost  = $.map(Group, function(index){return groupData[index][0][display];}).reduce(function(p, n){return p+n;});
 	$.each(Group, function(index){
 		$.map(groupData[Group[index]], function(n){
 			detailsTabeleRow += ('<tr><td data-title="Dept.">'+Group[index]+'</td><td data-title="Number of trips">'+n.NumerOfTrips+'</td><td data-title="Joined trips">'+n['Join']+'</td><td data-title="'+display+'">'+(isNaN(n[display]) ? 0 : n[display].toLocaleString())+'</td><td data-title="[%]">'+((isNaN(n[display]/sumarycost)) ? 0: (n[display]/sumarycost*100).toLocaleString())+'</td></tr>');
@@ -179,13 +186,10 @@ function displayInformation(display){
 }
 
 function graphTotalCost(categorie){
-	var graphData = {};
-	var TotalCost =0;
-	
-	var Tolerance = {'PlusTolerance' : [], 'MinusTolerance': [], };
-	var helpData = {'Months': []};
 	var ctx = null;
 	var barChart = null;
+	var TotalCostGraph = {};
+	var Tolerance = {'PlusTolerance' : 0, 'MinusTolerance':0};
 
 	$('#graph').html('');
 	$('#graph').append('<canvas id="graphTotalCost" class="shadow-depth-1"></canvas>');
@@ -195,91 +199,59 @@ function graphTotalCost(categorie){
 		type: 'bar',
 		data: {
 			labels: Group,
-			},
+		},
 		options: {
-		title: {
-			display: true,
-			text: 'Summary cost of ' + categorie
-			}
+			maintainAspectRatio: false,
+			legend: { display: false },
+			title: {
+				display: true,
+				text: 'Summary cost of ' + categorie
+				}
 		}
 	});
 
-	for(var i=0; i < Group.length; i++){
-		Tolerance.PlusTolerance.push((1+userSettings.PlusTolerance/100)*userSettings.Target); 
-		Tolerance.MinusTolerance.push((1-userSettings.MinusTolerance/100)*userSettings.Target);
-	}
-	
-	$.each(Group, function(index, group){
-		graphData[group] = {};
-		for(var year = ~~userSettings.StartDate.format('YYYY'); year <= ~~userSettings.EndDate.format('YYYY'); year++) {
-			graphData[group][year] = {}
-			for(var month = ~~userSettings.StartDate.format('M'); month <= ~~userSettings.EndDate.format('M'); month++){
-				graphData[group][year][month] = {};
-				var filterByDate =
-				travelInfo.map(function(n){
-					var firstDayMonth = moment(year+'-'+month +'-01').format('YYYY-MM-DD');
-					var lastDayMoth = moment(year+'-'+month).endOf('month').format('YYYY-MM-DD');
+	Tolerance.PlusTolerance = ((1+userSettings.PlusTolerance/100)*userSettings.Target); 
+	Tolerance.MinusTolerance = ((1-userSettings.MinusTolerance/100)*userSettings.Target);
 
-					if (moment(n.StartDate).isAfter(firstDayMonth) && moment(n.EndDate).isBefore(lastDayMoth) && (n.Group == group)){								
-						if(categorie == 'Total'){
-							TotalCost = ~~n['Avis'] + ~~ n['Booking'] + ~~n['PerDiem'] + ~~ n['Hotel'] + ~~ n['Poolcar'] + ~~n['Plane'] + ~~n['Taxi'];
-							return TotalCost;
-						}
-						else{
-							return ~~ n[categorie];
-						}
-					}
-				}).reduce(function(n, p){
-					n = ~~n;
-					p = ~~p;
-					return n+p;
-				});
-				graphData[group][year][month] = filterByDate;
+	for (var index in Group){
+		var TotalCost = $.map(travelInfo, function(element){
+			if (element.Group == Group[index]){
+				if (categorie == 'Total'){
+					var returnValue = ~~element['Avis'] + ~~element['Booking'] +~~element['Hotel'] + ~~element['PerDiem'] +~~element['Plane'] +~~element['Poolcar'] + ~~element['Taxi'];
+					return returnValue;
+				}
+				else {
+					return ~~element[categorie];
+				}
 			}
-		}
-	});
-
-	var years = Object.keys(graphData['MEACL']);
-	var months;
-
-	$.each(years, function(element, year){
-		months = Object.keys(graphData['MEACL'][year]);
-		$.each(months, function(object, month){
-			var data = [];
-			$.each(Group, function(index, group){
-				data.push(graphData[group][year][month].toFixed(2));
-			});
-			addData(barChart, 'rgb(255, 99, 132)', data, (year+'/'+ month) , 'bar');
 		});
+		if (TotalCost.length > 0){
+			TotalCost = TotalCost.reduce(function(p,n){
+				return ~~p+~~n;
+			});
+		}
+		else TotalCost = 0;
+		TotalCostGraph[Group[index]] = TotalCost;
+	}
+
+	var data  = $.map(TotalCostGraph, function(n){
+		return n.toFixed(2);
 	});
-		
-	addData(barChart, 'green', Tolerance.PlusTolerance, 'PlusTolerance', 'line');
-	addData(barChart, 'red', Tolerance.MinusTolerance, 'MinusTolerance', 'line');
+
+	var color = $.map(data, function(n){
+		return (n > Tolerance.MinusTolerance && n < Tolerance.PlusTolerance) ? 'rgb(60, 186, 159)':'rgb(255, 99, 132)';
+	});
+
+	addData(barChart, color, data);
 }
 
-function addData(chart, color, data, lable, type) {
-	if (type == 'bar'){
-		chart.data.datasets.push({
-			type: 'bar',
-			label: lable,
-			backgroundColor: color,
-			data: data
-		});
-	}else if (type = 'line'){
-			chart.data.datasets.push({
-				type: 'line',
-				label: lable,
-				fill: false,
-				fillColor: color,
-				strokeColor: color,
-				pointColor: color,
-				pointStrokeColor: color,
-				pointHighlightFill: color,
-				pointHighlightStroke: color,
-				fontSize: 40,
-				data: data
-		});
-	}
+function addData(chart, color, data) {
+	chart.data.datasets.push({
+		type: 'bar',
+		backgroundColor: color,
+		data: data
+	});
+
 	chart.update();
 }
 
@@ -309,4 +281,23 @@ function sort(tablica, key){
 			(nameA < nameB) ? -1: 0;
 			return 0;
 		});
+}
+
+function DisplayModalWorking(){
+	$('#ModalInfo').find('.icon-box').html(' ');
+	$('#ModalInfo :button').hide()
+	$('#ModalInfo').find('.icon-box').append('<div class="loader"></div>')
+	$('#ModalInfo').find('.modal-header').addClass('Working');
+	$('#ModalInfoBody').html('<h4>Working on it!</h4><p>Please give me a moment...</p>');
+	$('#ModalInfo').modal({backdrop: "static"});
+}
+
+
+function DisplayModalFail(error){
+	$('#ModalInfo :button').show();
+	$('#ModalInfo').find('.icon-box').html('<i class="glyphicon glyphicon-remove"></i>');
+	$('#ModalInfo').find('.modal-header').removeClass('Working').addClass('Error');
+	$('#ModalInfoBody').html('<h4>Ooops!</h4><p>Something went wrong :(</p><p>'+error+'</p>');
+
+	$('#ModalInfo').modal()
 }

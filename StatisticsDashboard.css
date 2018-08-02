@@ -39,8 +39,9 @@ body{
 	z-index: 1;
 }
 
-canvas{
-  min-height: 400px !important;
+.chart-container {
+	position: relative;
+	height: 50vh;
 }
 
 .row > label{
@@ -49,10 +50,6 @@ canvas{
 
 .container-fluid + .container-fluid{
 	margin: 1vh;
-}
-
-#graph + #topCountry {
-	margin-top: 1vh;
 }
 
 .error{
@@ -91,10 +88,10 @@ input[type="text"]:focus:valid, textarea:focus:valid{
 }
 
 .hr{
-   	border: 0;
-    height: 1px;
-    background: #333;
-    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+	border: 0;
+	height: 1px;
+	background: #333;
+	background-image: linear-gradient(to right, #ccc, #333, #ccc);
 }
 
 .flex-button{
@@ -124,9 +121,9 @@ input[type="text"]:focus:valid, textarea:focus:valid{
 		left: -9999px;
 	}
  
- 	#no-more-tables thead td{
- 		text-align: center;
- 	}
+	#no-more-tables thead td{
+		text-align: center;
+	}
 
 	#no-more-tables tr { border: 1px solid #ccc; }
  

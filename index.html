@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 	<link rel="stylesheet" type="text/css" href="StatisticsDashboard.css">
+	<link rel="stylesheet" type="text/css" href="modal.css">
 </head>
 <body>
 	<nav class="navbar blacknavbar">
@@ -58,8 +59,8 @@
 										<div class="col-xs-12" id="CostCategories">
 										<b>Categories to forecast for groups</b><br>
 											<div class="row flex-button">
-												<label><input class="form-check-input" type="checkbox" value="Hotel" >Hotel</label>
-												<label><input class="form-check-input" type="checkbox" value="Avis" >Avis</label>
+												<label><input class="form-check-input" type="checkbox" value="Hotel">Hotel</label>
+												<label><input class="form-check-input" type="checkbox" value="Avis">Avis</label>
 												<label><input class="form-check-input" type="checkbox" value="Booking">Booking cost</label>
 												<label><input class="form-check-input" type="checkbox" value="Taxi">Taxi</label>
 												<label><input class="form-check-input" type="checkbox" value="PerDiem">Per diem</label>
@@ -76,7 +77,7 @@
 										<div id="GraphCategorie" class="form-check col-xs-12">
 										<b>Categorie to graph</b><br>
 											<div class="row flex-button">
-												<label><input class="radio" type="radio" value="Total" name="GraphButton">Total</label>
+												<label><input class="radio" type="radio" value="Total" name="GraphButton">Total cost</label>
 												<label><input class="radio" type="radio" value="Hotel" name="GraphButton">Hotel</label>
 												<label><input class="radio" type="radio" value="Avis" name="GraphButton">Avis</label>
 												<label><input class="radio" type="radio" value="Booking" name="GraphButton">Booking cost</label>
@@ -171,30 +172,45 @@
 
 <!-- start graph-->
 	<div class='container-fluid wraper'>
-		<div class="col-md-8 col-md-12" id="graph"></div>
+		<div class="col-md-8 col-md-12 chart-container" id="graph"></div>
 		<div class="col-md-4 col-md-12" id="topCountry" hidden="true">
 					<div class='panel panel-default shadow-depth-1'>
-					<div class='panel-heading'>
-					<i class="glyphicon glyphicon-road"></i>&nbsp;
+						<div class='panel-heading'>
+						<i class="glyphicon glyphicon-road"></i>&nbsp;
 							<span class="headers">Trips destination</span>
-					</div>
-					<div class='panel-body'>
-						<div class="table-responsive">
-							<table class="table table-striped">
-								<thead>
-									<tr>
-										<th>Destination</th>
-										<th>Number of trips</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
 						</div>
-					</div>
+						<div class='panel-body'>
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>Destination</th>
+											<th>Number of trips</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
 				</div>
 		</div>
 	</div>
 <!-- end graph-->
+	<!-- Modal -->
+	<div id="ModalInfo" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-confirm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="icon-box">
+					</div>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body text-center">
+					<div id="ModalInfoBody"></div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
