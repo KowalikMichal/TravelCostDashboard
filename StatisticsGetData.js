@@ -297,7 +297,7 @@ function DisplayModalFail(error){
 	$('#ModalInfo :button').show();
 	$('#ModalInfo').find('.icon-box').html('<i class="glyphicon glyphicon-remove"></i>');
 	$('#ModalInfo').find('.modal-header').removeClass('Working').addClass('Error');
-	$('#ModalInfoBody').html('<h4>Ooops!</h4><p>Something went wrong :(</p><p>'+error+'</p>');
+	$('#ModalInfoBody').html('<h4>Ooops!</h4><p>'+error+'</p>');
 
 	$('#ModalInfo').modal()
 }
