@@ -42,7 +42,7 @@ function calendar(){
 	$('#dataUser').daterangepicker({
 		autoApply: true,
 		minDate: moment('2015/01/01'),
- 		maxDate: moment('2018/12/31'),
+		maxDate: moment('2018/12/31'),
 		startDate: start,
 		endDate: end,
 		ranges: {
@@ -56,7 +56,6 @@ function calendar(){
 	}, cb);
 	cb(start, end);
 }
-
 
 function validate(){
 	var complete = false;
@@ -88,14 +87,14 @@ function showDetails(){
 		userSettings.MinusTolerance = parseInt($('input[name="MinusTolerance"]').val());
 	
 	groupData ={'MEACL' :[{}], 'MPD' :[{}], 'CQA' :[{}], 'Press&Body' :[{}], 'C&A' :[{}], 'Paint' :[{}], 'SKD' :[{}]};
-			
-	$.when(getDataAjax()).done(function(ajaxData){
+
+	var DeferredGetData = new $.Deferred();
+	getDataAjax(DeferredGetData);
+
+	$.when(DeferredGetData).done(function(ajaxData = []){
 		travelInfo = ajaxData.filter(function(n){
 			if (moment(n.StartDate).isAfter(userSettings.StartDate) && moment(n.EndDate).isBefore(userSettings.EndDate)) return true;
 		});
-		if (!travelInfo.length > 0){
-			return DisplayModalFail('No any trips in select date!');
-		}
 		graphTotalCost($('#GraphCategorie').find("input:checked").val());
 		topCountry();
 		
@@ -114,13 +113,15 @@ function showDetails(){
 		});
 		$('#ModalInfo .close').click();
 		$('#LinkCateogires li:first-child').click();
+	}).fail(function(error){
+		return DisplayModalFail('No any trips in select date!');
 	});
 }
 
-function getDataAjax(){
+function getDataAjax(DeferredGetData){
 	var oDataUrl = "https://raw.githubusercontent.com/KowalikMichal/TravelCostDashboard/master/generated.json";
 
-	return $.ajax({
+	$.ajax({
 		async: false,
 		url: oDataUrl,
 		type: "GET",
@@ -130,10 +131,10 @@ function getDataAjax(){
 			"accept": "application/json;odata=verbose"  
 		},
 		success: function(data){
-			console.log('Ajax success!');
+			return DeferredGetData.resolve(data);
 		},
 		error: function(data, errMessage){
-			alert("Error on get data from database: " + errMessage);
+			return DeferredGetData.reject(errMessage);
 		}
 	});
 }
@@ -239,7 +240,7 @@ function graphTotalCost(categorie){
 	});
 
 	var color = $.map(data, function(n){
-		return (n > Tolerance.MinusTolerance && n < Tolerance.PlusTolerance) ? 'rgb(60, 186, 159)':'rgb(255, 99, 132)';
+		return (n > Tolerance.MinusTolerance && n < Tolerance.PlusTolerance) ? 'rgb(60, 186, 159)':'rgb(255, 99, 132)'; //if value is between target color green else red
 	});
 
 	addData(barChart, color, data);
@@ -265,22 +266,27 @@ function topCountry(){
 						obj[elem]++;
 						return obj;}, {});
 
-	$.each(TopCountry, function(index, val){
-		htmltopCountry += ('<tr><td>'+index+'</td><td>'+val+'</td></tr>');
-	});
+	var sortTopCountry = sortProperties(TopCountry);
+	for (var index in sortTopCountry){
+		const country = sortTopCountry[index][0];
+		const count = sortTopCountry[index][1]; 
+		htmltopCountry += ('<tr><td>'+country+'</td><td>'+count+'</td></tr>');
+	}
 
 	$('#topCountry').find('tbody').html(' ');
 	$('#topCountry').removeAttr('hidden');
 	$('#topCountry').find('tbody').append(htmltopCountry);
 }
 
-function sort(tablica, key){
-		tablica.sort(function(a, b) {
-			var nameA = a[key].toUpperCase(); // ignore upper and lowercase
-			var nameB = b[key].toUpperCase(); // ignore upper and lowercase
-			(nameA < nameB) ? -1: 0;
-			return 0;
-		});
+function sortProperties(obj){
+	var sortable=[];
+	for(var key in obj)
+		if(obj.hasOwnProperty(key))
+			sortable.push([key, obj[key]]);
+	sortable.sort(function(a, b){
+	  return b[1]-a[1];
+	});
+	return sortable;
 }
 
 function DisplayModalWorking(){
@@ -298,6 +304,5 @@ function DisplayModalFail(error){
 	$('#ModalInfo').find('.icon-box').html('<i class="glyphicon glyphicon-remove"></i>');
 	$('#ModalInfo').find('.modal-header').removeClass('Working').addClass('Error');
 	$('#ModalInfoBody').html('<h4>Ooops!</h4><p>'+error+'</p>');
-
 	$('#ModalInfo').modal()
 }
