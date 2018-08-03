@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="icon" href="icon.png">
+	<title>Travel forecast cost</title>
 	<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
@@ -39,10 +40,10 @@
 				</div>
 				<div class="col-md-12 col-md-4">
 					<label for="Target">Target: </label>
-						<input type="text" name="Target" class="costInput form-control" min="0" value="" pattern="^[0-9]*$" required>
+						<input type="number" name="Target" class="costInput form-control" min="0" value="" pattern="^[0-9]*$" required>
 					<div class="row">
-						<div class="col-xs-6 col-md-6"><label for="PlusTolerance">[+ %]</label><input type="text" name="PlusTolerance" class="costInput form-control" min="0" value="" pattern="^[0-9]*$" required></div>
-						<div class="col-xs-6 col-md-6"><label for="MinusTolerance">[- %]</label><input type="text" name="MinusTolerance" class="costInput form-control" min="0" value="" pattern="^[0-9]*$" required></div>
+						<div class="col-xs-6 col-md-6"><label for="PlusTolerance">[+ %]</label><input type="number" name="PlusTolerance" class="costInput form-control" min="0" value="" pattern="^[0-9]*$" required></div>
+						<div class="col-xs-6 col-md-6"><label for="MinusTolerance">[- %]</label><input type="number" name="MinusTolerance" class="costInput form-control" min="0" value="" pattern="^[0-9]*$" required></div>
 					</div>
 				</div>
 				<div class="col-md-12 col-md-4">
@@ -58,7 +59,7 @@
 									<div class="row form-inline">									
 										<div class="col-xs-12" id="CostCategories">
 										<b>Categories to forecast for groups</b><br>
-											<div class="row flex-button">
+											<div class="row flex-button checkbox">
 												<label><input class="form-check-input" type="checkbox" value="Hotel">Hotel</label>
 												<label><input class="form-check-input" type="checkbox" value="Avis">Avis</label>
 												<label><input class="form-check-input" type="checkbox" value="Booking">Booking cost</label>
@@ -76,7 +77,7 @@
 										</div>
 										<div id="GraphCategorie" class="form-check col-xs-12">
 										<b>Categorie to graph</b><br>
-											<div class="row flex-button">
+											<div class="row flex-button radio">
 												<label><input class="radio" type="radio" value="Total" name="GraphButton">Total cost</label>
 												<label><input class="radio" type="radio" value="Hotel" name="GraphButton">Hotel</label>
 												<label><input class="radio" type="radio" value="Avis" name="GraphButton">Avis</label>
