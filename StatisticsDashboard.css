@@ -52,7 +52,7 @@ body{
 	margin: 1vh;
 }
 
-.error{
+input[type="number"].error{
 	border: 1px solid red;
 }
 
@@ -60,11 +60,11 @@ body{
 	font-color: red;
 }
 
-input[type="text"]:focus:invalid, textarea:focus:invalid{
+input[type="number"]:focus:invalid, textarea:focus:invalid{
 	border:solid 2px #F5192F;
 }
 
-input[type="text"]:focus:valid, textarea:focus:valid{
+input[type="number"]:focus:valid, textarea:focus:valid{
 	border:solid 2px #18E109;
 	background-color:#fff;
 }

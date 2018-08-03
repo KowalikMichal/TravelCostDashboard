@@ -5,19 +5,19 @@ var travelInfo = [];
 
 $(function(){
 	$('.collapse').collapse();
-	$('#CostCategories').find("input").prop( 'checked', true);
-	$('#GraphCategorie').find('input[value="Total"]').prop( 'checked', true);
+	$('.checkbox input').prop( 'checked', true);
+	$('.radio input[value="Total"]').prop( 'checked', true);
 
 	calendar();
 	
 	$('#UnselectAllCategories').on("click", function(){
-		$('#CostCategories').find(":input").each(function(){
+		$('.checkbox :input').each(function(){
 			this.checked = false;
 		});
 	});
 
 	$('#SelectAllCategories').on("click", function(){
-		$('#CostCategories').find(":input").each(function(){
+		$('.checkbox :input').each(function(){
 			this.checked = true;
 		});
 	});
@@ -58,21 +58,22 @@ function calendar(){
 }
 
 function validate(){
-	var complete = false;
+	$('.error').removeClass('error');
 
-	if ($('input[name="Target"]').val() == '' || $('input[name="PlusTolerance"]').val() == '' || $('input[name="MinusTolerance"]').val() == '') complete=0;
-	else if (!($('#GraphCategorie').find(':input:radio:checked').length > 0)) complete=0;
-	else if (!($('#CostCategories').find(':input:checkbox:checked').length > 0)) complete=0;
-	else complete=1;
-	
-	if (complete == 1){
+	$('input[type="number"]').each(function(){
+		 if ($(this).val() == '') $(this).addClass('error');
+	});
+	if (!$('.radio').find(':input:radio:checked').length > 0) $('.radio').addClass('error');
+	if (!$('.checkbox').find(':input:checkbox:checked').length > 0) $('.checkbox').addClass('error');
+
+	if ($('.error').length == 0){
 		showDetails();
 		$('#incorrect').closest('.alert').attr('hidden', 'hidden');
+		return;
 	}
-	else{
-		$('#incorrect').html('<strong>Please fill correct form!</strong>');
-		$('#incorrect').closest('.alert').removeAttr('hidden');
-	}
+
+	$('#incorrect').html('<strong>Please fill correct form!</strong>');
+	$('#incorrect').closest('.alert').removeAttr('hidden')
 }
 
 function showDetails(){
@@ -95,6 +96,8 @@ function showDetails(){
 		travelInfo = ajaxData.filter(function(n){
 			if (moment(n.StartDate).isAfter(userSettings.StartDate) && moment(n.EndDate).isBefore(userSettings.EndDate)) return true;
 		});
+
+		if(travelInfo.length == 0) return DisplayModalFail('No any trips in select date!');
 		graphTotalCost($('#GraphCategorie').find("input:checked").val());
 		topCountry();
 		
@@ -226,6 +229,7 @@ function graphTotalCost(categorie){
 				}
 			}
 		});
+
 		if (TotalCost.length > 0){
 			TotalCost = TotalCost.reduce(function(p,n){
 				return ~~p+~~n;
@@ -259,7 +263,6 @@ function addData(chart, color, data) {
 function topCountry(){
 	var TopCountry = {};
 	var htmltopCountry;
-	var topCountry;
 
 	TopCountry= $.map(travelInfo, function(n){return (n.Destiantion.toUpperCase())}).reduce(function(obj, elem){
 						obj[elem]=obj[elem] || 0;
@@ -297,7 +300,6 @@ function DisplayModalWorking(){
 	$('#ModalInfoBody').html('<h4>Working on it!</h4><p>Please give me a moment...</p>');
 	$('#ModalInfo').modal({backdrop: "static"});
 }
-
 
 function DisplayModalFail(error){
 	$('#ModalInfo :button').show();
