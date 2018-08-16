@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta http-equiv="Content-Type" charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
 	<link rel="icon" href="icon.png">
 	<title>Travel forecast cost</title>
-	<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
-	<script type="text/javascript" src="StatisticsGetData.js"></script>		
+	<script src="StatisticsGetData.js"></script>		
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -23,7 +25,7 @@
 	</nav>
 
 	<div class="container-fluid">
-		<div class="alert alert-danger alert-dismissible fade in"  hidden="true">
+		<div class="alert alert-danger alert-dismissible fade in" hidden>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 			<i id="incorrect"></i>
 		</div>
@@ -40,10 +42,10 @@
 				</div>
 				<div class="col-md-12 col-md-4">
 					<label for="Target">Target: </label>
-						<input type="number" name="Target" class="costInput form-control" min="0" value="1500000" pattern="^[0-9]*$" required >
+						<input type="number" name="Target" class="costInput form-control" min="0" value="1500000" required >
 					<div class="row">
-						<div class="col-xs-6 col-md-6"><label for="PlusTolerance">[+ %]</label><input type="number" name="PlusTolerance" class="costInput form-control" min="0" value="10" pattern="^[0-9]*$" required> </div>
-						<div class="col-xs-6 col-md-6"><label for="MinusTolerance">[- %]</label><input type="number" name="MinusTolerance" class="costInput form-control" min="0" value="10" pattern="^[0-9]*$" required></div>
+						<div class="col-xs-6 col-md-6"><label for="PlusTolerance">[+ %]</label><input type="number" name="PlusTolerance" class="costInput form-control" min="0" value="10" required> </div>
+						<div class="col-xs-6 col-md-6"><label for="MinusTolerance">[- %]</label><input type="number" name="MinusTolerance" class="costInput form-control" min="0" value="10" required></div>
 					</div>
 				</div>
 				<div class="col-md-12 col-md-4">
@@ -89,8 +91,7 @@
 											</div>							
 										</div>
 										<hr>
-									</div>
-									
+									</div>									
 								</div>
 							</div>
 						</div>
@@ -104,7 +105,7 @@
 		</div>
 	</div>
 <!--basic info-->
-	<div id="basicInfo" class="container-fluid wraper" hidden="true">
+	<div id="basicInfo" class="container-fluid wraper" hidden>
 		<div class="col-md-4">
 			<div class="panel panel-default settings shadow-depth-1">
 				<div class='panel-heading'>
@@ -137,7 +138,7 @@
 		</div>
 	</div>
 <!-- Calculated Cost -->
-	<div id='divCalculatedCost' class='container-fluid wraper' hidden="true">		
+	<div id='divCalculatedCost' class='container-fluid wraper' hidden>		
 			<div class='panel panel-default shadow-depth-1'>
 				<div class='panel-heading'>
 						<span class="headers"><i class="glyphicon glyphicon-time"></i> Forecast cost - check details for each group in department</span>
@@ -170,7 +171,7 @@
 <!-- Graph and destination-->
 	<div class='container-fluid wraper'>
 		<div class="col-md-8 col-md-12 chart-container" id="graph"></div>
-		<div class="col-md-4 col-md-12" id="topCountry" hidden="true">
+		<div class="col-md-4 col-md-12" id="topCountry" hidden>
 					<div class='panel panel-default shadow-depth-1'>
 						<div class='panel-heading'>
 						<i class="glyphicon glyphicon-road"></i>&nbsp;
