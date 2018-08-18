@@ -206,12 +206,23 @@ function graphTotalCost(categorie){
 		},
 		options: {
 			maintainAspectRatio: false,
-			legend: { display: false },
+			legend: {
+				display: false
+			},
 			title: {
 				display: true,
 				text: 'Summary cost of ' + categorie
-				}
-		}
+			},
+			tooltips: {
+				displayColors: false,
+		  		callbacks: {
+					label: function(tooltipItem, data) {
+						var value = data.datasets[0].data[tooltipItem.index];
+						return parseInt(value).toLocaleString();
+					}
+		  		}
+			},  
+		},
 	});
 
 	Tolerance.PlusTolerance = ((1+userSettings.PlusTolerance/100)*userSettings.Target); 
@@ -229,7 +240,6 @@ function graphTotalCost(categorie){
 				}
 			}
 		});
-
 		if (TotalCost.length > 0){
 			TotalCost = TotalCost.reduce(function(p,n){
 				return ~~p+~~n;
